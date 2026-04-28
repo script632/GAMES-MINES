@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MELBET - GEMS SCRIPT</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #FFD700;
+  --red2: #cc9900;
+  --red-glow: rgba(255,215,0,0.6);
+  --dark: #000000;
+  --card: #0a0800;
+  --border: #332200;
+  --text: #FFD700;
+  --dim: #886600;
+  --green-ok: #00ff41;
+}
+ 
+* { margin:0; padding:0; box-sizing:border-box; }
+ 
+body {
+  font-family: 'Cairo', sans-serif;
+  background: #000;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+ 
+/* ── MATRIX RAIN CANVAS ── */
+#matrixCanvas {
+  position: fixed; inset: 0;
+  opacity: 0.07;
+  pointer-events: none;
+  z-index: 0;
+}
+ 
+/* ── SCANLINES ── */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+ 
+/* ── RED VIGNETTE ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(180,140,0,0.15) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+ 
+/* ── SCREENS ── */
+.screen {
+  display: none;
+  width: 100%;
+  max-width: 440px;
+  padding: 16px;
+  position: relative;
+  z-index: 10;
+}
+.screen.active { display: block; animation: glitchIn 0.5s ease; }
+ 
+@keyframes glitchIn {
+  0%   { opacity:0; transform: translateX(-6px); clip-path: inset(30% 0 50% 0); }
+  20%  { clip-path: inset(10% 0 70% 0); transform: translateX(4px); }
+  40%  { clip-path: inset(60% 0 10% 0); transform: translateX(-3px); }
+  60%  { clip-path: inset(0% 0 0% 0); transform: translateX(2px); opacity:1; }
+  100% { clip-path: inset(0); transform: translateX(0); opacity:1; }
+}
+ 
+/* ── LOGO ── */
+.logo { text-align: center; margin-bottom: 20px; }
+.logo-text {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 2.4rem;
+  color: var(--red);
+  letter-spacing: 6px;
+  text-shadow: 0 0 10px var(--red), 0 0 30px var(--red-glow), 0 0 60px rgba(255,215,0,0.3);
+  animation: flicker 4s infinite;
+  position: relative;
+}
+.logo-text::before {
+  content: attr(data-text);
+  position: absolute; left: 0; top: 0;
+  color: var(--red);
+  animation: glitch1 3s infinite;
+  clip-path: inset(30% 0 50% 0);
+  opacity: 0.6;
+}
+@keyframes flicker {
+  0%,19%,21%,23%,25%,54%,56%,100% { text-shadow: 0 0 10px var(--red), 0 0 30px var(--red-glow); }
+  20%,24%,55% { text-shadow: none; opacity: 0.8; }
+}
+@keyframes glitch1 {
+  0%,90%,100% { transform: translate(0); clip-path: inset(30% 0 50% 0); }
+  91% { transform: translate(-3px, 1px); clip-path: inset(20% 0 60% 0); }
+  93% { transform: translate(3px, -1px); clip-path: inset(50% 0 20% 0); }
+  95% { transform: translate(0); }
+}
+ 
+.logo-sub {
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--dim);
+  font-size: 0.7rem;
+  letter-spacing: 8px;
+  margin-top: 4px;
+  animation: blink 1.5s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0.3; } }
+ 
+/* ── CARD ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--red2);
+  border-radius: 4px;
+  padding: 24px 20px;
+  box-shadow: 0 0 30px rgba(255,215,0,0.15), inset 0 0 30px rgba(255,215,0,0.03);
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--red), transparent);
+  animation: scanLine 3s linear infinite;
+}
+@keyframes scanLine {
+  0%   { top: 0; opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+ 
+/* corner decorations */
+.card::after {
+  content: '';
+  position: absolute; top: 8px; right: 8px;
+  width: 16px; height: 16px;
+  border-top: 2px solid var(--red);
+  border-right: 2px solid var(--red);
+  opacity: 0.5;
+}
+ 
+.corner-bl {
+  position: absolute; bottom: 8px; left: 8px;
+  width: 16px; height: 16px;
+  border-bottom: 2px solid var(--red);
+  border-left: 2px solid var(--red);
+  opacity: 0.5;
+}
+ 
+/* ── CARD TITLE ── */
+.card-title {
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--red);
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 20px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+ 
+/* ── PROMO BOX ── */
+.promo-box {
+  border: 1px solid var(--red2);
+  border-radius: 4px;
+  padding: 14px;
+  margin-bottom: 18px;
+  text-align: center;
+  background: rgba(255,215,0,0.04);
+  position: relative;
+  overflow: hidden;
+}
+.promo-box::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(255,215,0,0.04) 50%, transparent 60%);
+  animation: shimmer 2.5s infinite;
+}
+@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+ 
+.promo-label {
+  font-family: 'Share Tech Mono', monospace;
+  color: #660022;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+.promo-code {
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--red);
+  font-size: 1.6rem;
+  letter-spacing: 6px;
+  text-shadow: 0 0 20px var(--red-glow);
+  animation: pulseRed 2s ease-in-out infinite;
+}
+@keyframes pulseRed {
+  0%,100% { text-shadow: 0 0 10px var(--red-glow); }
+  50% { text-shadow: 0 0 25px var(--red-glow), 0 0 50px rgba(255,215,0,0.3); }
+}
+.promo-note {
+  font-size: 0.75rem;
+  color: #ffcc44;
+  margin-top: 6px;
+  font-weight: 700;
+}
+ 
+/* ── FORM ── */
+.form-group { margin-bottom: 14px; }
+.form-label {
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--dim);
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+  display: block;
+  text-transform: uppercase;
+}
+.form-input {
+  width: 100%;
+  background: #050400;
+  border: 1px solid #332200;
+  border-radius: 3px;
+  padding: 11px 14px;
+  color: var(--red);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.3s;
+  direction: ltr;
+  caret-color: var(--red);
+}
+.form-input::placeholder { color: #330022; }
+.form-input:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 2px rgba(255,215,0,0.15), 0 0 10px rgba(255,215,0,0.1);
+  background: #080700;
+}
+ 
+/* ── BUTTON ── */
+.btn-login {
+  width: 100%;
+  padding: 13px;
+  background: transparent;
+  border: 1px solid var(--red);
+  border-radius: 3px;
+  color: var(--red);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+}
+.btn-login::before {
+  content: '';
+  position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,215,0,0.15), transparent);
+  transition: left 0.4s;
+}
+.btn-login:hover {
+  background: rgba(255,215,0,0.08);
+  box-shadow: 0 0 20px rgba(255,215,0,0.3);
+  letter-spacing: 6px;
+}
+.btn-login:hover::before { left: 100%; }
+ 
+/* ── ERROR ── */
+.error-msg {
+  font-family: 'Share Tech Mono', monospace;
+  background: rgba(255,215,0,0.06);
+  border: 1px solid rgba(255,215,0,0.3);
+  border-radius: 3px;
+  padding: 9px 12px;
+  color: var(--red);
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  text-align: center;
+  margin-bottom: 12px;
+  display: none;
+}
+.error-msg.show { display: block; animation: glitchIn 0.3s ease; }
+ 
+/* ── LOADING ── */
+.loading-wrap { text-align: center; padding: 30px 10px; }
+ 
+.hack-spinner {
+  width: 70px; height: 70px;
+  margin: 0 auto 20px;
+  position: relative;
+}
+.hack-spinner::before, .hack-spinner::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+}
+.hack-spinner::before {
+  border-top-color: var(--red);
+  border-right-color: var(--red);
+  animation: spin 0.7s linear infinite;
+}
+.hack-spinner::after {
+  border-bottom-color: #550011;
+  border-left-color: #550011;
+  animation: spin 1.2s linear infinite reverse;
+  inset: 8px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+ 
+.hack-inner {
+  position: absolute; inset: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--red);
+  font-size: 0.65rem;
+  animation: blink 0.5s step-end infinite;
+}
+ 
+.loading-title {
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--red);
+  font-size: 0.85rem;
+  letter-spacing: 3px;
+  margin-bottom: 6px;
+  text-shadow: 0 0 10px var(--red-glow);
+}
+.loading-log {
+  font-family: 'Share Tech Mono', monospace;
+  color: #443300;
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  min-height: 18px;
+  margin-bottom: 16px;
+}
+.loading-log span { color: var(--green-ok); }
+ 
+.progress-bar {
+  height: 3px;
+  background: #1a1200;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--red);
+  width: 0%;
+  box-shadow: 0 0 10px var(--red-glow);
+  transition: width 0.1s linear;
+}
+ 
+.progress-pct {
+  font-family: 'Share Tech Mono', monospace;
+  color: #443300;
+  font-size: 0.7rem;
+  text-align: right;
+  margin-top: 4px;
+}
+ 
+/* ── USER BAR ── */
+.user-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #1a1200;
+}
+.user-badge {
+  display: flex; align-items: center; gap: 8px;
+}
+.user-dot {
+  width: 7px; height: 7px;
+  background: var(--green-ok);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--green-ok);
+  animation: blink 1s step-end infinite;
+}
+.user-name {
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--red);
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+}
+.status-badge {
+  font-family: 'Share Tech Mono', monospace;
+  color: #443300;
+  font-size: 0.68rem;
+  letter-spacing: 1px;
+}
+.status-badge span { color: var(--green-ok); }
+ 
+/* ── GAME TITLE ── */
+.game-title {
+  font-family: 'Share Tech Mono', monospace;
+  text-align: center;
+  color: #443300;
+  font-size: 0.72rem;
+  letter-spacing: 4px;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+}
+ 
+/* ── GRID ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-bottom: 18px;
+}
+ 
+.cell {
+  aspect-ratio: 1;
+  background: #050400;
+  border: 1px solid #1a1200;
+  border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+.cell::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,215,0,0.02), transparent);
+}
+ 
+.cell.gem-revealed {
+  background: #0d0c00;
+  border-color: var(--red);
+  box-shadow: 0 0 12px rgba(255,215,0,0.4), inset 0 0 8px rgba(255,215,0,0.08);
+  animation: hackReveal 0.35s ease;
+}
+@keyframes hackReveal {
+  0%  { transform: scale(0.7) rotateY(90deg); opacity: 0; border-color: var(--green-ok); box-shadow: 0 0 20px rgba(0,255,65,0.6); }
+  50% { border-color: var(--red); }
+  100%{ transform: scale(1) rotateY(0deg); opacity: 1; }
+}
+ 
+.gem-icon {
+  font-size: 1.3rem;
+  filter: drop-shadow(0 0 6px rgba(255,215,0,0.9)) hue-rotate(140deg) saturate(2);
+  animation: gemSpin 3s ease-in-out infinite;
+}
+@keyframes gemSpin {
+  0%,100% { filter: drop-shadow(0 0 6px rgba(255,215,0,0.9)) hue-rotate(140deg) saturate(2); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 14px rgba(255,215,0,1)) hue-rotate(140deg) saturate(3); transform: scale(1.1); }
+}
+ 
+/* ── GAME BUTTONS ── */
+.game-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 0;
+}
+ 
+.btn-again {
+  background: transparent;
+  border: 1px solid #332200;
+  border-radius: 3px;
+  color: #554400;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.btn-again:hover { border-color: var(--red); color: var(--red); background: rgba(255,215,0,0.05); }
+ 
+.btn-start {
+  background: var(--red2);
+  border: 1px solid var(--red);
+  border-radius: 3px;
+  color: #fff;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 0 15px rgba(255,215,0,0.3);
+  text-transform: uppercase;
+}
+.btn-start:hover { box-shadow: 0 0 25px rgba(255,215,0,0.6); transform: translateY(-1px); }
+.btn-start:disabled { opacity: 0.3; cursor: not-allowed; transform: none; box-shadow: none; }
+ 
+/* ── TERMINAL LINES ── */
+.terminal-lines {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #1a1200;
+}
+.t-line {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.65rem;
+  color: #332200;
+  letter-spacing: 1px;
+  line-height: 1.8;
+  animation: typeLine 0.5s ease;
+}
+.t-line .ok { color: var(--green-ok); }
+.t-line .warn { color: var(--red); }
+@keyframes typeLine { from { opacity:0; transform: translateX(-5px); } to { opacity:1; } }
+</style>
+</head>
+<body>
+ 
+<canvas id="matrixCanvas"></canvas>
+ 
+<!-- ===== LOGIN ===== -->
+<div class="screen active" id="loginScreen">
+  <div class="logo">
+    <div class="logo-text" data-text="[ MELBET ]">[ MELBET ]</div>
+    <div class="logo-sub">// GEMS SCRIPT v2.0 //</div>
+  </div>
+ 
+  <div class="card">
+    <div class="corner-bl"></div>
+ 
+    <div class="promo-box">
+      <div class="promo-label">> PROMO CODE — REQUIRED</div>
+      <div class="promo-code">VIPBET090</div>
+      <div class="promo-note">⚠ لازم تسجل بالبرومو دا وتشحن حسابك 300 جنيه على الأقل</div>
+    </div>
+ 
+    <div class="card-title">> AUTHENTICATE USER</div>
+ 
+    <div class="error-msg" id="errorMsg">> ERROR: ACCESS DENIED — INVALID CREDENTIALS</div>
+ 
+    <div class="form-group">
+      <label class="form-label">> USER_ID [ 10 DIGITS ]</label>
+      <input class="form-input" id="usernameInput" type="tel"
+        placeholder="__________" autocomplete="off" maxlength="10"
+        oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+    </div>
+ 
+    <div class="form-group">
+      <label class="form-label">> PASSWORD</label>
+      <input class="form-input" id="passwordInput" type="password"
+        placeholder="••••••••••" autocomplete="off" />
+    </div>
+ 
+    <button class="btn-login" onclick="doLogin()">[ ENTER SYSTEM ]</button>
+  </div>
+</div>
+ 
+<!-- ===== LOADING ===== -->
+<div class="screen" id="loadingScreen">
+  <div class="logo">
+    <div class="logo-text" data-text="[ MELBET ]">[ MELBET ]</div>
+    <div class="logo-sub">// GEMS SCRIPT v2.0 //</div>
+  </div>
+ 
+  <div class="card">
+    <div class="corner-bl"></div>
+    <div class="loading-wrap">
+      <div class="hack-spinner">
+        <div class="hack-inner">SYS</div>
+      </div>
+      <div class="loading-title">> CONNECTING TO SERVER...</div>
+      <div class="loading-log" id="loadingLog">> <span>INIT...</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-pct" id="progressPct">0%</div>
+    </div>
+  </div>
+</div>
+ 
+<!-- ===== GAME ===== -->
+<div class="screen" id="gameScreen">
+  <div class="logo">
+    <div class="logo-text" data-text="[ MELBET ]">[ MELBET ]</div>
+    <div class="logo-sub">// GEMS SCRIPT v2.0 //</div>
+  </div>
+ 
+  <div class="card">
+    <div class="corner-bl"></div>
+ 
+    <div class="user-bar">
+      <div class="user-badge">
+        <div class="user-dot"></div>
+        <span class="user-name" id="displayUser">USER</span>
+      </div>
+      <div class="status-badge">STATUS: <span>ONLINE</span></div>
+    </div>
+ 
+    <div class="game-title">> SCANNING GEMS MATRIX...</div>
+ 
+    <div class="grid" id="gameGrid"></div>
+ 
+    <div class="game-buttons">
+      <button class="btn-again" onclick="resetGrid()">[ RESET ]</button>
+      <button class="btn-start" id="startBtn" onclick="startGame()">[ SCAN ]</button>
+    </div>
+ 
+    <div class="terminal-lines" id="termLines">
+      <div class="t-line">> SYSTEM <span class="ok">READY</span></div>
+      <div class="t-line">> AWAITING COMMAND...</div>
+    </div>
+    <div style="margin-top:14px; padding-top:12px; border-top:1px solid #332200;">
+      <a href="https://t.me/mari_3_m" target="_blank" style="
+        display:flex; align-items:center; justify-content:center; gap:12px;
+        background:rgba(255,215,0,0.05);
+        border:1px solid #FFD700;
+        border-radius:5px;
+        padding:13px 16px;
+        text-decoration:none;
+        box-shadow:0 0 15px rgba(255,215,0,0.15);
+        transition:all 0.3s;"
+        onmouseover="this.style.boxShadow='0 0 28px rgba(255,215,0,0.4)';this.style.background='rgba(255,215,0,0.1)'"
+        onmouseout="this.style.boxShadow='0 0 15px rgba(255,215,0,0.15)';this.style.background='rgba(255,215,0,0.05)'">
+        <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="24" r="24" fill="#FFD700" fill-opacity="0.12"/>
+          <path d="M10.5 23.5L36.5 13L28 37L22 29L10.5 23.5Z" fill="#FFD700"/>
+          <path d="M22 29L20.5 36.5L25 31L22 29Z" fill="#cc9900"/>
+          <path d="M22 29L28 37L36.5 13L22 29Z" fill="#FFD700" fill-opacity="0.6"/>
+        </svg>
+        <div>
+          <div style="font-family:'Share Tech Mono',monospace; color:#FFD700; font-size:0.95rem; letter-spacing:2px; text-shadow:0 0 10px rgba(255,215,0,0.6);">@mari_3_m</div>
+          <div style="font-family:'Share Tech Mono',monospace; color:#886600; font-size:0.62rem; letter-spacing:1px; margin-top:2px;">JOIN TELEGRAM CHANNEL</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+ 
+<script>
+// ── MATRIX RAIN ──
+const canvas = document.getElementById('matrixCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+const cols = Math.floor(canvas.width / 16);
+const drops = Array(cols).fill(1);
+const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*!<>';
+ 
+function drawMatrix() {
+  ctx.fillStyle = 'rgba(0,0,0,0.05)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#FFD700';
+  ctx.font = '13px Share Tech Mono';
+  drops.forEach((y, i) => {
+    ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * 16, y * 16);
+    if (y * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
+  });
+}
+setInterval(drawMatrix, 45);
+window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+ 
+// ── AUTH ──
+function doLogin() {
+  const u = document.getElementById('usernameInput').value.trim();
+  const p = document.getElementById('passwordInput').value.trim();
+  const err = document.getElementById('errorMsg');
+  const validID = /^\d{10}$/.test(u);
+  const validPass = (p === 'VIP00' || p === 'VIPBET090' || p === 'VIPBET090');
+ 
+  if (validID && validPass) {
+    err.classList.remove('show');
+    document.getElementById('displayUser').textContent = u.slice(0,4) + '***' + u.slice(-3);
+    showLoading();
+  } else {
+    err.classList.add('show');
+    ['usernameInput','passwordInput'].forEach(id => {
+      const el = document.getElementById(id);
+      el.style.borderColor = '#ff0033';
+      el.style.boxShadow = '0 0 10px rgba(255,215,0,0.4)';
+      setTimeout(() => { el.style.borderColor=''; el.style.boxShadow=''; }, 1800);
+    });
+  }
+}
+ 
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('loginScreen').classList.contains('active')) doLogin();
+});
+ 
+// ── LOADING ──
+const loadLogs = [
+  '> VALIDATING USER_ID...',
+  '> CHECKING CREDENTIALS...',
+  '> CONNECTING TO MELBET SERVER...',
+  '> BYPASSING SECURITY LAYER...',
+  '> INJECTING GEMS MODULE...',
+  '> DECRYPTING MATRIX DATA...',
+  '> LOADING PREDICTION ENGINE...',
+  '> <span class="ok">ACCESS GRANTED ✓</span>',
+];
+ 
+function showLoading() {
+  showScreen('loadingScreen');
+  let progress = 0;
+  let logIdx = 0;
+  const fill = document.getElementById('progressFill');
+  const pct = document.getElementById('progressPct');
+  const log = document.getElementById('loadingLog');
+ 
+  const logInterval = setInterval(() => {
+    if (logIdx < loadLogs.length) {
+      log.innerHTML = loadLogs[logIdx++];
+    }
+  }, 600);
+ 
+  const barInterval = setInterval(() => {
+    progress += 1.6;
+    if (progress > 100) progress = 100;
+    fill.style.width = progress + '%';
+    pct.textContent = Math.floor(progress) + '%';
+ 
+    if (progress >= 100) {
+      clearInterval(barInterval);
+      clearInterval(logInterval);
+      setTimeout(() => { showScreen('gameScreen'); buildGrid(); }, 600);
+    }
+  }, 50);
+}
+ 
+// ── SCREENS ──
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+ 
+// ── GAME ──
+const TOTAL = 25;
+let gameRunning = false;
+ 
+function buildGrid() {
+  const grid = document.getElementById('gameGrid');
+  grid.innerHTML = '';
+  for (let i = 0; i < TOTAL; i++) {
+    const c = document.createElement('div');
+    c.className = 'cell';
+    c.id = 'c' + i;
+    grid.appendChild(c);
+  }
+  document.getElementById('startBtn').disabled = false;
+  gameRunning = false;
+  addTermLine('> MATRIX RESET. READY FOR SCAN.', 'ok');
+}
+ 
+function resetGrid() { buildGrid(); }
+ 
+function addTermLine(text, type = '') {
+  const wrap = document.getElementById('termLines');
+  const d = document.createElement('div');
+  d.className = 'terminal-lines';
+  const line = document.createElement('div');
+  line.className = 't-line';
+  line.innerHTML = type ? `${text.replace('ok','').replace('warn','')} <span class="${type}"></span>` : text;
+  line.innerHTML = text;
+  wrap.innerHTML = '';
+  wrap.appendChild(line);
+}
+ 
+function startGame() {
+  if (gameRunning) return;
+  gameRunning = true;
+  document.getElementById('startBtn').disabled = true;
+ 
+  for (let i = 0; i < TOTAL; i++) {
+    const c = document.getElementById('c' + i);
+    c.className = 'cell'; c.innerHTML = '';
+  }
+ 
+  addTermLine('> <span class="warn">SCANNING MATRIX...</span>');
+ 
+  const positions = [];
+  while (positions.length < 5) {
+    const p = Math.floor(Math.random() * TOTAL);
+    if (!positions.includes(p)) positions.push(p);
+  }
+ 
+  positions.forEach((pos, idx) => {
+    setTimeout(() => {
+      const cell = document.getElementById('c' + pos);
+      cell.className = 'cell gem-revealed';
+      cell.innerHTML = '<span class="gem-icon">💎</span>';
+ 
+      if (idx === 4) {
+        setTimeout(() => {
+          addTermLine('> <span class="ok">SCAN COMPLETE — 5 GEMS FOUND ✓</span>');
+          gameRunning = true;
+          document.getElementById('startBtn').disabled = true;
+        }, 300);
+      }
+    }, idx * 150 + 80);
+  });
+}
+ 
+buildGrid();
+</script>
+</body>
+</html>
+ 
