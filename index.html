@@ -7,15 +7,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --red: #FFD700;
-  --red2: #cc9900;
-  --red-glow: rgba(255,215,0,0.6);
+  --gold: #F5C542;
+  --orange: #FF8C00;
+  --amber: #FFB300;
+  --red: #FF4500;
+  --red-glow: rgba(255,69,0,0.5);
+  --gold-glow: rgba(245,197,66,0.5);
   --dark: #000000;
-  --card: #0a0800;
-  --border: #332200;
-  --text: #FFD700;
-  --dim: #886600;
-  --green-ok: #00ff41;
+  --card: #08060a;
+  --border: #2a1f00;
+  --dim: #7a5c00;
+  --green-ok: #39FF14;
 }
  
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -58,7 +60,7 @@ body::after {
 body::before {
   content: '';
   position: fixed; inset: 0;
-  background: radial-gradient(ellipse at center, transparent 40%, rgba(180,140,0,0.15) 100%);
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(255,140,0,0.08) 100%);
   pointer-events: none;
   z-index: 1;
 }
@@ -128,7 +130,7 @@ body::before {
   border: 1px solid var(--red2);
   border-radius: 4px;
   padding: 24px 20px;
-  box-shadow: 0 0 30px rgba(255,215,0,0.15), inset 0 0 30px rgba(255,215,0,0.03);
+  box-shadow: 0 0 30px rgba(255,215,0,0.15), inset 0 0 30px rgba(245,197,66,0.03);
   position: relative;
   overflow: hidden;
 }
@@ -136,7 +138,7 @@ body::before {
   content: '';
   position: absolute; top: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--red), transparent);
+  background: linear-gradient(90deg, transparent, var(--orange), var(--red), transparent);
   animation: scanLine 3s linear infinite;
 }
 @keyframes scanLine {
@@ -213,7 +215,7 @@ body::before {
 }
 .promo-note {
   font-size: 0.75rem;
-  color: #ffcc44;
+  color: var(--orange);
   margin-top: 6px;
   font-weight: 700;
 }
@@ -231,8 +233,8 @@ body::before {
 }
 .form-input {
   width: 100%;
-  background: #050400;
-  border: 1px solid #332200;
+  background: #060408;
+  border: 1px solid #2a1f00;
   border-radius: 3px;
   padding: 11px 14px;
   color: var(--red);
@@ -247,7 +249,7 @@ body::before {
 .form-input:focus {
   border-color: var(--red);
   box-shadow: 0 0 0 2px rgba(255,215,0,0.15), 0 0 10px rgba(255,215,0,0.1);
-  background: #080700;
+  background: #080610;
 }
  
 /* ── BUTTON ── */
@@ -257,7 +259,7 @@ body::before {
   background: transparent;
   border: 1px solid var(--red);
   border-radius: 3px;
-  color: var(--red);
+  color: var(--amber);
   font-family: 'Share Tech Mono', monospace;
   font-size: 0.9rem;
   letter-spacing: 4px;
@@ -342,7 +344,7 @@ body::before {
 }
 .loading-log {
   font-family: 'Share Tech Mono', monospace;
-  color: #443300;
+  color: #7a5c00;
   font-size: 0.72rem;
   letter-spacing: 1px;
   min-height: 18px;
@@ -352,7 +354,7 @@ body::before {
  
 .progress-bar {
   height: 3px;
-  background: #1a1200;
+  background: #1a1000;
   border-radius: 2px;
   overflow: hidden;
   margin-top: 4px;
@@ -367,7 +369,7 @@ body::before {
  
 .progress-pct {
   font-family: 'Share Tech Mono', monospace;
-  color: #443300;
+  color: #7a5c00;
   font-size: 0.7rem;
   text-align: right;
   margin-top: 4px;
@@ -378,7 +380,7 @@ body::before {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 14px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #1a1200;
+  border-bottom: 1px solid #1a1000;
 }
 .user-badge {
   display: flex; align-items: center; gap: 8px;
@@ -398,7 +400,7 @@ body::before {
 }
 .status-badge {
   font-family: 'Share Tech Mono', monospace;
-  color: #443300;
+  color: #7a5c00;
   font-size: 0.68rem;
   letter-spacing: 1px;
 }
@@ -408,7 +410,7 @@ body::before {
 .game-title {
   font-family: 'Share Tech Mono', monospace;
   text-align: center;
-  color: #443300;
+  color: #7a5c00;
   font-size: 0.72rem;
   letter-spacing: 4px;
   margin-bottom: 14px;
@@ -425,8 +427,8 @@ body::before {
  
 .cell {
   aspect-ratio: 1;
-  background: #050400;
-  border: 1px solid #1a1200;
+  background: #060408;
+  border: 1px solid #1a1000;
   border-radius: 3px;
   display: flex; align-items: center; justify-content: center;
   position: relative;
@@ -440,13 +442,13 @@ body::before {
 }
  
 .cell.gem-revealed {
-  background: #0d0c00;
-  border-color: var(--red);
-  box-shadow: 0 0 12px rgba(255,215,0,0.4), inset 0 0 8px rgba(255,215,0,0.08);
+  background: #0d0a00;
+  border-color: var(--orange);
+  box-shadow: 0 0 14px rgba(255,140,0,0.5), 0 0 4px rgba(255,69,0,0.3), inset 0 0 8px rgba(255,140,0,0.06);
   animation: hackReveal 0.35s ease;
 }
 @keyframes hackReveal {
-  0%  { transform: scale(0.7) rotateY(90deg); opacity: 0; border-color: var(--green-ok); box-shadow: 0 0 20px rgba(0,255,65,0.6); }
+  0%  { transform: scale(0.7) rotateY(90deg); opacity: 0; border-color: var(--amber); box-shadow: 0 0 20px rgba(255,179,0,0.6); }
   50% { border-color: var(--red); }
   100%{ transform: scale(1) rotateY(0deg); opacity: 1; }
 }
@@ -471,9 +473,9 @@ body::before {
  
 .btn-again {
   background: transparent;
-  border: 1px solid #332200;
+  border: 1px solid #2a1f00;
   border-radius: 3px;
-  color: #554400;
+  color: #7a5c00;
   font-family: 'Share Tech Mono', monospace;
   font-size: 0.8rem;
   letter-spacing: 2px;
@@ -484,8 +486,8 @@ body::before {
 .btn-again:hover { border-color: var(--red); color: var(--red); background: rgba(255,215,0,0.05); }
  
 .btn-start {
-  background: var(--red2);
-  border: 1px solid var(--red);
+  background: linear-gradient(135deg, #FF8C00, #FF4500);
+  border: 1px solid var(--amber);
   border-radius: 3px;
   color: #fff;
   font-family: 'Share Tech Mono', monospace;
@@ -494,7 +496,7 @@ body::before {
   padding: 12px;
   cursor: pointer;
   transition: all 0.3s;
-  box-shadow: 0 0 15px rgba(255,215,0,0.3);
+  box-shadow: 0 0 15px rgba(255,140,0,0.4);
   text-transform: uppercase;
 }
 .btn-start:hover { box-shadow: 0 0 25px rgba(255,215,0,0.6); transform: translateY(-1px); }
@@ -504,12 +506,12 @@ body::before {
 .terminal-lines {
   margin-top: 14px;
   padding-top: 12px;
-  border-top: 1px solid #1a1200;
+  border-top: 1px solid #1a1000;
 }
 .t-line {
   font-family: 'Share Tech Mono', monospace;
   font-size: 0.65rem;
-  color: #332200;
+  color: #2a1f00;
   letter-spacing: 1px;
   line-height: 1.8;
   animation: typeLine 0.5s ease;
@@ -612,27 +614,27 @@ body::before {
       <div class="t-line">> SYSTEM <span class="ok">READY</span></div>
       <div class="t-line">> AWAITING COMMAND...</div>
     </div>
-    <div style="margin-top:14px; padding-top:12px; border-top:1px solid #332200;">
-      <a href="https://t.me/mari_3_m" target="_blank" style="
+    <div style="margin-top:14px; padding-top:12px; border-top:1px solid #2a1f00;">
+      <a href="https://t.me/ELKVINKJG" target="_blank" style="
         display:flex; align-items:center; justify-content:center; gap:12px;
-        background:rgba(255,215,0,0.05);
-        border:1px solid #FFD700;
+        background:rgba(255,140,0,0.05);
+        border:1px solid var(--orange);
         border-radius:5px;
         padding:13px 16px;
         text-decoration:none;
-        box-shadow:0 0 15px rgba(255,215,0,0.15);
+        box-shadow:0 0 15px rgba(255,140,0,0.2);
         transition:all 0.3s;"
-        onmouseover="this.style.boxShadow='0 0 28px rgba(255,215,0,0.4)';this.style.background='rgba(255,215,0,0.1)'"
-        onmouseout="this.style.boxShadow='0 0 15px rgba(255,215,0,0.15)';this.style.background='rgba(255,215,0,0.05)'">
+        onmouseover="this.style.boxShadow='0 0 28px rgba(255,140,0,0.5)';this.style.background='rgba(255,140,0,0.1)'"
+        onmouseout="this.style.boxShadow='0 0 15px rgba(255,140,0,0.2)';this.style.background='rgba(255,140,0,0.05)'">
         <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="24" cy="24" r="24" fill="#FFD700" fill-opacity="0.12"/>
-          <path d="M10.5 23.5L36.5 13L28 37L22 29L10.5 23.5Z" fill="#FFD700"/>
-          <path d="M22 29L20.5 36.5L25 31L22 29Z" fill="#cc9900"/>
-          <path d="M22 29L28 37L36.5 13L22 29Z" fill="#FFD700" fill-opacity="0.6"/>
+          <circle cx="24" cy="24" r="24" fill="#FF8C00" fill-opacity="0.12"/>
+          <path d="M10.5 23.5L36.5 13L28 37L22 29L10.5 23.5Z" fill="#F5C542"/>
+          <path d="M22 29L20.5 36.5L25 31L22 29Z" fill="var(--orange)"/>
+          <path d="M22 29L28 37L36.5 13L22 29Z" fill="#FF8C00" fill-opacity="0.6"/>
         </svg>
         <div>
-          <div style="font-family:'Share Tech Mono',monospace; color:#FFD700; font-size:0.95rem; letter-spacing:2px; text-shadow:0 0 10px rgba(255,215,0,0.6);">@mari_3_m</div>
-          <div style="font-family:'Share Tech Mono',monospace; color:#886600; font-size:0.62rem; letter-spacing:1px; margin-top:2px;">JOIN TELEGRAM CHANNEL</div>
+          <div style="font-family:'Share Tech Mono',monospace; background:linear-gradient(90deg,#F5C542,#FF8C00); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-size:0.95rem; letter-spacing:2px; filter:drop-shadow(0 0 6px rgba(255,140,0,0.5));">@ELKVINKJG</div>
+          <div style="font-family:'Share Tech Mono',monospace; color:#7a5c00; font-size:0.62rem; letter-spacing:1px; margin-top:2px;">JOIN TELEGRAM CHANNEL</div>
         </div>
       </a>
     </div>
@@ -652,7 +654,7 @@ const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*!<>';
 function drawMatrix() {
   ctx.fillStyle = 'rgba(0,0,0,0.05)';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = '#FFD700';
+  ctx.fillStyle = '#FF8C00';
   ctx.font = '13px Share Tech Mono';
   drops.forEach((y, i) => {
     ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * 16, y * 16);
@@ -714,10 +716,10 @@ function showLoading() {
     if (logIdx < loadLogs.length) {
       log.innerHTML = loadLogs[logIdx++];
     }
-  }, 600);
+  }, 5000);
  
   const barInterval = setInterval(() => {
-    progress += 1.6;
+    progress += 0.25;
     if (progress > 100) progress = 100;
     fill.style.width = progress + '%';
     pct.textContent = Math.floor(progress) + '%';
@@ -725,9 +727,9 @@ function showLoading() {
     if (progress >= 100) {
       clearInterval(barInterval);
       clearInterval(logInterval);
-      setTimeout(() => { showScreen('gameScreen'); buildGrid(); }, 600);
+      setTimeout(() => { showScreen('gameScreen'); buildGrid(); }, 5000);
     }
-  }, 50);
+  }, 100);
 }
  
 // ── SCREENS ──
@@ -807,4 +809,3 @@ buildGrid();
 </script>
 </body>
 </html>
- 
