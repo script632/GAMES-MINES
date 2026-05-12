@@ -3,809 +3,288 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MELBET - GEMS SCRIPT</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<title>ELKING11</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
-:root {
-  --gold: #F5C542;
-  --orange: #FF8C00;
-  --amber: #FFB300;
-  --red: #FF4500;
-  --red-glow: rgba(255,69,0,0.5);
-  --gold-glow: rgba(245,197,66,0.5);
-  --dark: #000000;
-  --card: #08060a;
-  --border: #2a1f00;
-  --dim: #7a5c00;
-  --green-ok: #39FF14;
-}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #050500; font-family: 'Share Tech Mono', monospace; color: #fff; min-height: 100vh; overflow: hidden; }
+  .screen { display: none; width: 100%; height: 100vh; }
+  .screen.active { display: flex; }
  
-* { margin:0; padding:0; box-sizing:border-box; }
+  #matrix-canvas { position: fixed; top: 0; left: 0; z-index: 0; opacity: 0.2; pointer-events: none; }
  
-body {
-  font-family: 'Cairo', sans-serif;
-  background: #000;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  position: relative;
-}
+  .scan-line {
+    position: fixed; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,220,0,0.3), transparent);
+    animation: scan 3s linear infinite; z-index: 1;
+  }
+  @keyframes scan { 0%{top:0} 100%{top:100vh} }
  
-/* ── MATRIX RAIN CANVAS ── */
-#matrixCanvas {
-  position: fixed; inset: 0;
-  opacity: 0.07;
-  pointer-events: none;
-  z-index: 0;
-}
+  /* ===== LOGIN ===== */
+  #login-screen { align-items: center; justify-content: center; flex-direction: column; }
  
-/* ── SCANLINES ── */
-body::after {
-  content: '';
-  position: fixed; inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0,0,0,0.08) 2px,
-    rgba(0,0,0,0.08) 4px
-  );
-  pointer-events: none;
-  z-index: 1;
-}
+  .login-box {
+    position: relative; z-index: 2;
+    background: rgba(10,8,0,0.93);
+    border: 1px solid #ccaa00;
+    border-radius: 4px;
+    padding: 40px 40px 32px; width: 430px;
+    box-shadow: 0 0 50px rgba(200,170,0,0.25), inset 0 0 60px rgba(200,170,0,0.03);
+  }
+  .corner { position: absolute; width: 14px; height: 14px; border-color: #ffdd00; border-style: solid; }
+  .corner.tl{top:-1px;left:-1px;border-width:2px 0 0 2px}
+  .corner.tr{top:-1px;right:-1px;border-width:2px 2px 0 0}
+  .corner.bl{bottom:-1px;left:-1px;border-width:0 0 2px 2px}
+  .corner.br{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
  
-/* ── RED VIGNETTE ── */
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background: radial-gradient(ellipse at center, transparent 40%, rgba(255,140,0,0.08) 100%);
-  pointer-events: none;
-  z-index: 1;
-}
+  .mariam-sub {
+    font-family: "Orbitron", monospace;
+    font-size: 28px;
+    font-weight: 900;
+    color: #ffdd00;
+    text-align: center;
+    letter-spacing: 4px;
+    margin-bottom: 14px;
+    text-shadow: 0 0 20px rgba(255,220,0,0.7);
+    line-height: 1.3;
+  }
+  .mariam-title {
+    font-family: 'Orbitron', monospace; font-size: 52px; font-weight: 900;
+    text-align: center; letter-spacing: 6px; margin-bottom: 10px;
+    background: linear-gradient(90deg, #ffdd00, #fff700, #ffaa00);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    filter: drop-shadow(0 0 12px rgba(255,220,0,0.6));
+  }
+  .logo {
+    font-family:'Orbitron',monospace; font-size:48px; font-weight:900; color:#ffdd00;
+    text-align:center; letter-spacing:6px; margin-bottom:4px;
+    text-shadow:0 0 24px rgba(255,220,0,0.7);
+  }
+  .logo-sub { font-size:10px; color:#665500; text-align:center; letter-spacing:6px; margin-bottom:30px; }
  
-/* ── SCREENS ── */
-.screen {
-  display: none;
-  width: 100%;
-  max-width: 440px;
-  padding: 16px;
-  position: relative;
-  z-index: 10;
-}
-.screen.active { display: block; animation: glitchIn 0.5s ease; }
+  .field-label { font-size:11px; color:#887700; letter-spacing:3px; margin-bottom:8px; display:block; }
+  .field-input {
+    width:100%; background:rgba(20,16,0,0.85); border:1px solid #443300;
+    border-radius:2px; color:#ffdd00; font-family:'Share Tech Mono',monospace;
+    font-size:16px; padding:12px 16px; margin-bottom:22px; outline:none;
+    transition:border-color 0.2s; letter-spacing:2px;
+  }
+  .field-input:focus { border-color:#ccaa00; box-shadow:0 0 10px rgba(200,170,0,0.25); }
+  .field-input::placeholder { color:#332200; }
  
-@keyframes glitchIn {
-  0%   { opacity:0; transform: translateX(-6px); clip-path: inset(30% 0 50% 0); }
-  20%  { clip-path: inset(10% 0 70% 0); transform: translateX(4px); }
-  40%  { clip-path: inset(60% 0 10% 0); transform: translateX(-3px); }
-  60%  { clip-path: inset(0% 0 0% 0); transform: translateX(2px); opacity:1; }
-  100% { clip-path: inset(0); transform: translateX(0); opacity:1; }
-}
+  .login-btn {
+    width:100%; background:linear-gradient(90deg,#ccaa00,#ffdd00,#cc8800);
+    border:none; border-radius:2px; color:#000; font-family:'Orbitron',monospace;
+    font-size:13px; font-weight:900; letter-spacing:4px; padding:14px;
+    cursor:pointer; transition:all 0.2s; margin-top:4px;
+  }
+  .login-btn:hover { box-shadow:0 0 30px rgba(255,220,0,0.6); transform:translateY(-1px); }
+  .login-btn:active { transform:scale(0.98); }
  
-/* ── LOGO ── */
-.logo { text-align: center; margin-bottom: 20px; }
-.logo-text {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 2.4rem;
-  color: var(--red);
-  letter-spacing: 6px;
-  text-shadow: 0 0 10px var(--red), 0 0 30px var(--red-glow), 0 0 60px rgba(255,215,0,0.3);
-  animation: flicker 4s infinite;
-  position: relative;
-}
-.logo-text::before {
-  content: attr(data-text);
-  position: absolute; left: 0; top: 0;
-  color: var(--red);
-  animation: glitch1 3s infinite;
-  clip-path: inset(30% 0 50% 0);
-  opacity: 0.6;
-}
-@keyframes flicker {
-  0%,19%,21%,23%,25%,54%,56%,100% { text-shadow: 0 0 10px var(--red), 0 0 30px var(--red-glow); }
-  20%,24%,55% { text-shadow: none; opacity: 0.8; }
-}
-@keyframes glitch1 {
-  0%,90%,100% { transform: translate(0); clip-path: inset(30% 0 50% 0); }
-  91% { transform: translate(-3px, 1px); clip-path: inset(20% 0 60% 0); }
-  93% { transform: translate(3px, -1px); clip-path: inset(50% 0 20% 0); }
-  95% { transform: translate(0); }
-}
+  .error-msg { color:#ffaa00; font-size:11px; text-align:center; margin-top:12px; letter-spacing:2px; min-height:16px; }
  
-.logo-sub {
-  font-family: 'Share Tech Mono', monospace;
-  color: var(--dim);
-  font-size: 0.7rem;
-  letter-spacing: 8px;
-  margin-top: 4px;
-  animation: blink 1.5s step-end infinite;
-}
-@keyframes blink { 50% { opacity: 0.3; } }
+  .tg-login { text-align:center; margin-top:20px; padding:14px 0 4px; border-top:1px solid #332200; }
+  .tg-login .tg-label { font-size:11px; color:#665500; letter-spacing:3px; margin-bottom:8px; }
+  .tg-login a {
+    display:inline-block; color:#2aabee; text-decoration:none;
+    font-family:'Orbitron',monospace; font-size:22px; font-weight:900;
+    letter-spacing:4px; text-shadow:0 0 14px rgba(42,171,238,0.5); transition:all 0.2s;
+  }
+  .tg-login a:hover { color:#7dd4ff; text-shadow:0 0 24px rgba(42,171,238,0.8); }
  
-/* ── CARD ── */
-.card {
-  background: var(--card);
-  border: 1px solid var(--red2);
-  border-radius: 4px;
-  padding: 24px 20px;
-  box-shadow: 0 0 30px rgba(255,215,0,0.15), inset 0 0 30px rgba(245,197,66,0.03);
-  position: relative;
-  overflow: hidden;
-}
-.card::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--orange), var(--red), transparent);
-  animation: scanLine 3s linear infinite;
-}
-@keyframes scanLine {
-  0%   { top: 0; opacity: 1; }
-  100% { top: 100%; opacity: 0; }
-}
+  /* ===== LOADING ===== */
+  #loading-screen { align-items:center; justify-content:center; flex-direction:column; gap:28px; }
+  .loading-title {
+    font-family:'Orbitron',monospace; font-size:22px; font-weight:700;
+    color:#ffdd00; letter-spacing:6px; text-align:center; z-index:2;
+    text-shadow:0 0 20px rgba(255,220,0,0.5);
+  }
+  .loading-sub { font-size:11px; color:#665500; letter-spacing:6px; text-align:center; z-index:2; margin-top:-16px; }
+  .progress-wrap { width:360px; z-index:2; }
+  .progress-bar-bg {
+    width:100%; height:6px; background:rgba(100,80,0,0.3);
+    border:1px solid #443300; border-radius:2px; overflow:hidden; margin-bottom:10px;
+  }
+  .progress-bar-fill {
+    height:100%; width:0%;
+    background:linear-gradient(90deg,#886600,#ffdd00,#fff700);
+    border-radius:2px; transition:width 0.5s linear;
+    box-shadow:0 0 10px rgba(255,220,0,0.6);
+  }
+  .progress-pct { font-size:12px; color:#ccaa00; text-align:right; letter-spacing:2px; }
+  .loading-log { font-size:11px; color:#665500; letter-spacing:2px; text-align:center; z-index:2; }
  
-/* corner decorations */
-.card::after {
-  content: '';
-  position: absolute; top: 8px; right: 8px;
-  width: 16px; height: 16px;
-  border-top: 2px solid var(--red);
-  border-right: 2px solid var(--red);
-  opacity: 0.5;
-}
+  /* ===== DASHBOARD ===== */
+  #dashboard-screen { flex-direction:column; align-items:center; justify-content:center; gap:30px; }
+  .dash-header {
+    position:absolute; top:24px; left:0; right:0;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:0 32px; z-index:2;
+  }
+  .dash-logo { font-family:'Orbitron',monospace; font-size:15px; font-weight:900; color:#ccaa00; letter-spacing:4px; }
+  .dash-uid { font-size:11px; color:#554400; letter-spacing:3px; }
  
-.corner-bl {
-  position: absolute; bottom: 8px; left: 8px;
-  width: 16px; height: 16px;
-  border-bottom: 2px solid var(--red);
-  border-left: 2px solid var(--red);
-  opacity: 0.5;
-}
+  .mariam-dash {
+    font-family: "Orbitron", monospace;
+    font-size: 28px;
+    font-weight: 900;
+    color: #ffdd00;
+    letter-spacing: 4px;
+    text-align: center;
+    z-index: 2;
+    text-shadow: 0 0 20px rgba(255,220,0,0.7);
+  }
+  .mariam-dash span { font-size:12px; color:#665500; letter-spacing:3px; display:block; margin-bottom:4px; font-weight:400; font-family:'Share Tech Mono',monospace; }
  
-/* ── CARD TITLE ── */
-.card-title {
-  font-family: 'Share Tech Mono', monospace;
-  color: var(--red);
-  font-size: 0.9rem;
-  text-align: center;
-  margin-bottom: 20px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-}
+  .green-screen {
+    width:360px; height:180px; border:2px solid #00ff44; border-radius:4px;
+    overflow:hidden; box-shadow:0 0 30px rgba(0,255,60,0.3); position:relative; z-index:2;
+  }
+  .green-screen img { width:100%; height:100%; object-fit:cover; display:block; }
  
-/* ── PROMO BOX ── */
-.promo-box {
-  border: 1px solid var(--red2);
-  border-radius: 4px;
-  padding: 14px;
-  margin-bottom: 18px;
-  text-align: center;
-  background: rgba(255,215,0,0.04);
-  position: relative;
-  overflow: hidden;
-}
-.promo-box::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, transparent 40%, rgba(255,215,0,0.04) 50%, transparent 60%);
-  animation: shimmer 2.5s infinite;
-}
-@keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+  .btn-group { display:flex; flex-direction:row; gap:20px; z-index:2; }
+  .game-btn {
+    font-family:'Orbitron',monospace; font-size:17px; font-weight:900;
+    letter-spacing:5px; width:160px; height:60px; border-radius:3px; cursor:pointer; transition:all 0.2s;
+  }
+  .btn-start {
+    background:linear-gradient(135deg,#ccaa00,#ffdd00);
+    border:1px solid #ffee00; color:#000;
+    box-shadow:0 0 22px rgba(200,170,0,0.4);
+  }
+  .btn-start:hover { box-shadow:0 0 40px rgba(255,220,0,0.6); transform:translateY(-2px); }
+  .btn-again {
+    background:transparent; border:1px solid #665500; color:#ccaa00;
+  }
+  .btn-again:hover { border-color:#ffdd00; color:#ffee00; box-shadow:0 0 20px rgba(200,170,0,0.3); transform:translateY(-2px); }
+  .btn-start:active,.btn-again:active { transform:scale(0.97); }
  
-.promo-label {
-  font-family: 'Share Tech Mono', monospace;
-  color: #660022;
-  font-size: 0.7rem;
-  letter-spacing: 2px;
-  margin-bottom: 8px;
-}
-.promo-code {
-  font-family: 'Share Tech Mono', monospace;
-  color: var(--red);
-  font-size: 1.6rem;
-  letter-spacing: 6px;
-  text-shadow: 0 0 20px var(--red-glow);
-  animation: pulseRed 2s ease-in-out infinite;
-}
-@keyframes pulseRed {
-  0%,100% { text-shadow: 0 0 10px var(--red-glow); }
-  50% { text-shadow: 0 0 25px var(--red-glow), 0 0 50px rgba(255,215,0,0.3); }
-}
-.promo-note {
-  font-size: 0.75rem;
-  color: var(--orange);
-  margin-top: 6px;
-  font-weight: 700;
-}
+  .tg-dash { text-align:center; z-index:2; display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .tg-dash .tg-label { font-size:11px; color:#443300; letter-spacing:3px; }
+  .tg-dash a {
+    color:#2aabee; text-decoration:none; font-family:'Orbitron',monospace;
+    font-size:38px; font-weight:900; letter-spacing:4px;
+    text-shadow:0 0 14px rgba(42,171,238,0.5); transition:all 0.2s;
+  }
+  .tg-dash a:hover { color:#7dd4ff; text-shadow:0 0 28px rgba(42,171,238,0.9); }
  
-/* ── FORM ── */
-.form-group { margin-bottom: 14px; }
-.form-label {
-  font-family: 'Share Tech Mono', monospace;
-  color: var(--dim);
-  font-size: 0.72rem;
-  letter-spacing: 2px;
-  margin-bottom: 6px;
-  display: block;
-  text-transform: uppercase;
-}
-.form-input {
-  width: 100%;
-  background: #060408;
-  border: 1px solid #2a1f00;
-  border-radius: 3px;
-  padding: 11px 14px;
-  color: var(--red);
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.95rem;
-  outline: none;
-  transition: all 0.3s;
-  direction: ltr;
-  caret-color: var(--red);
-}
-.form-input::placeholder { color: #330022; }
-.form-input:focus {
-  border-color: var(--red);
-  box-shadow: 0 0 0 2px rgba(255,215,0,0.15), 0 0 10px rgba(255,215,0,0.1);
-  background: #080610;
-}
- 
-/* ── BUTTON ── */
-.btn-login {
-  width: 100%;
-  padding: 13px;
-  background: transparent;
-  border: 1px solid var(--red);
-  border-radius: 3px;
-  color: var(--amber);
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.9rem;
-  letter-spacing: 4px;
-  cursor: pointer;
-  transition: all 0.3s;
-  text-transform: uppercase;
-  position: relative;
-  overflow: hidden;
-}
-.btn-login::before {
-  content: '';
-  position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,215,0,0.15), transparent);
-  transition: left 0.4s;
-}
-.btn-login:hover {
-  background: rgba(255,215,0,0.08);
-  box-shadow: 0 0 20px rgba(255,215,0,0.3);
-  letter-spacing: 6px;
-}
-.btn-login:hover::before { left: 100%; }
- 
-/* ── ERROR ── */
-.error-msg {
-  font-family: 'Share Tech Mono', monospace;
-  background: rgba(255,215,0,0.06);
-  border: 1px solid rgba(255,215,0,0.3);
-  border-radius: 3px;
-  padding: 9px 12px;
-  color: var(--red);
-  font-size: 0.75rem;
-  letter-spacing: 1px;
-  text-align: center;
-  margin-bottom: 12px;
-  display: none;
-}
-.error-msg.show { display: block; animation: glitchIn 0.3s ease; }
- 
-/* ── LOADING ── */
-.loading-wrap { text-align: center; padding: 30px 10px; }
- 
-.hack-spinner {
-  width: 70px; height: 70px;
-  margin: 0 auto 20px;
-  position: relative;
-}
-.hack-spinner::before, .hack-spinner::after {
-  content: '';
-  position: absolute; inset: 0;
-  border-radius: 50%;
-  border: 2px solid transparent;
-}
-.hack-spinner::before {
-  border-top-color: var(--red);
-  border-right-color: var(--red);
-  animation: spin 0.7s linear infinite;
-}
-.hack-spinner::after {
-  border-bottom-color: #550011;
-  border-left-color: #550011;
-  animation: spin 1.2s linear infinite reverse;
-  inset: 8px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
- 
-.hack-inner {
-  position: absolute; inset: 18px;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Share Tech Mono', monospace;
-  color: var(--red);
-  font-size: 0.65rem;
-  animation: blink 0.5s step-end infinite;
-}
- 
-.loading-title {
-  font-family: 'Share Tech Mono', monospace;
-  color: var(--red);
-  font-size: 0.85rem;
-  letter-spacing: 3px;
-  margin-bottom: 6px;
-  text-shadow: 0 0 10px var(--red-glow);
-}
-.loading-log {
-  font-family: 'Share Tech Mono', monospace;
-  color: #7a5c00;
-  font-size: 0.72rem;
-  letter-spacing: 1px;
-  min-height: 18px;
-  margin-bottom: 16px;
-}
-.loading-log span { color: var(--green-ok); }
- 
-.progress-bar {
-  height: 3px;
-  background: #1a1000;
-  border-radius: 2px;
-  overflow: hidden;
-  margin-top: 4px;
-}
-.progress-fill {
-  height: 100%;
-  background: var(--red);
-  width: 0%;
-  box-shadow: 0 0 10px var(--red-glow);
-  transition: width 0.1s linear;
-}
- 
-.progress-pct {
-  font-family: 'Share Tech Mono', monospace;
-  color: #7a5c00;
-  font-size: 0.7rem;
-  text-align: right;
-  margin-top: 4px;
-}
- 
-/* ── USER BAR ── */
-.user-bar {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 14px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #1a1000;
-}
-.user-badge {
-  display: flex; align-items: center; gap: 8px;
-}
-.user-dot {
-  width: 7px; height: 7px;
-  background: var(--green-ok);
-  border-radius: 50%;
-  box-shadow: 0 0 8px var(--green-ok);
-  animation: blink 1s step-end infinite;
-}
-.user-name {
-  font-family: 'Share Tech Mono', monospace;
-  color: var(--red);
-  font-size: 0.8rem;
-  letter-spacing: 2px;
-}
-.status-badge {
-  font-family: 'Share Tech Mono', monospace;
-  color: #7a5c00;
-  font-size: 0.68rem;
-  letter-spacing: 1px;
-}
-.status-badge span { color: var(--green-ok); }
- 
-/* ── GAME TITLE ── */
-.game-title {
-  font-family: 'Share Tech Mono', monospace;
-  text-align: center;
-  color: #7a5c00;
-  font-size: 0.72rem;
-  letter-spacing: 4px;
-  margin-bottom: 14px;
-  text-transform: uppercase;
-}
- 
-/* ── GRID ── */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
-  margin-bottom: 18px;
-}
- 
-.cell {
-  aspect-ratio: 1;
-  background: #060408;
-  border: 1px solid #1a1000;
-  border-radius: 3px;
-  display: flex; align-items: center; justify-content: center;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.2s;
-}
-.cell::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(255,215,0,0.02), transparent);
-}
- 
-.cell.gem-revealed {
-  background: #0d0a00;
-  border-color: var(--orange);
-  box-shadow: 0 0 14px rgba(255,140,0,0.5), 0 0 4px rgba(255,69,0,0.3), inset 0 0 8px rgba(255,140,0,0.06);
-  animation: hackReveal 0.35s ease;
-}
-@keyframes hackReveal {
-  0%  { transform: scale(0.7) rotateY(90deg); opacity: 0; border-color: var(--amber); box-shadow: 0 0 20px rgba(255,179,0,0.6); }
-  50% { border-color: var(--red); }
-  100%{ transform: scale(1) rotateY(0deg); opacity: 1; }
-}
- 
-.gem-icon {
-  font-size: 1.3rem;
-  filter: drop-shadow(0 0 6px rgba(255,215,0,0.9)) hue-rotate(140deg) saturate(2);
-  animation: gemSpin 3s ease-in-out infinite;
-}
-@keyframes gemSpin {
-  0%,100% { filter: drop-shadow(0 0 6px rgba(255,215,0,0.9)) hue-rotate(140deg) saturate(2); transform: scale(1); }
-  50% { filter: drop-shadow(0 0 14px rgba(255,215,0,1)) hue-rotate(140deg) saturate(3); transform: scale(1.1); }
-}
- 
-/* ── GAME BUTTONS ── */
-.game-buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 0;
-}
- 
-.btn-again {
-  background: transparent;
-  border: 1px solid #2a1f00;
-  border-radius: 3px;
-  color: #7a5c00;
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.8rem;
-  letter-spacing: 2px;
-  padding: 12px;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-.btn-again:hover { border-color: var(--red); color: var(--red); background: rgba(255,215,0,0.05); }
- 
-.btn-start {
-  background: linear-gradient(135deg, #FF8C00, #FF4500);
-  border: 1px solid var(--amber);
-  border-radius: 3px;
-  color: #fff;
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.8rem;
-  letter-spacing: 3px;
-  padding: 12px;
-  cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 0 15px rgba(255,140,0,0.4);
-  text-transform: uppercase;
-}
-.btn-start:hover { box-shadow: 0 0 25px rgba(255,215,0,0.6); transform: translateY(-1px); }
-.btn-start:disabled { opacity: 0.3; cursor: not-allowed; transform: none; box-shadow: none; }
- 
-/* ── TERMINAL LINES ── */
-.terminal-lines {
-  margin-top: 14px;
-  padding-top: 12px;
-  border-top: 1px solid #1a1000;
-}
-.t-line {
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.65rem;
-  color: #2a1f00;
-  letter-spacing: 1px;
-  line-height: 1.8;
-  animation: typeLine 0.5s ease;
-}
-.t-line .ok { color: var(--green-ok); }
-.t-line .warn { color: var(--red); }
-@keyframes typeLine { from { opacity:0; transform: translateX(-5px); } to { opacity:1; } }
+  .dash-footer { position:absolute; bottom:14px; font-size:10px; color:#1a1a00; letter-spacing:3px; }
 </style>
 </head>
 <body>
  
-<canvas id="matrixCanvas"></canvas>
+<canvas id="matrix-canvas"></canvas>
+<div class="scan-line"></div>
  
-<!-- ===== LOGIN ===== -->
-<div class="screen active" id="loginScreen">
-  <div class="logo">
-    <div class="logo-text" data-text="[ MELBET ]">[ MELBET ]</div>
-    <div class="logo-sub">// GEMS SCRIPT v2.0 //</div>
-  </div>
- 
-  <div class="card">
-    <div class="corner-bl"></div>
- 
-    <div class="promo-box">
-      <div class="promo-label">> PROMO CODE — REQUIRED</div>
-      <div class="promo-code">VIPBET090</div>
-      <div class="promo-note">⚠ لازم تسجل بالبرومو دا وتشحن حسابك 300 جنيه على الأقل</div>
-    </div>
- 
-    <div class="card-title">> AUTHENTICATE USER</div>
- 
-    <div class="error-msg" id="errorMsg">> ERROR: ACCESS DENIED — INVALID CREDENTIALS</div>
- 
-    <div class="form-group">
-      <label class="form-label">> USER_ID [ 10 DIGITS ]</label>
-      <input class="form-input" id="usernameInput" type="tel"
-        placeholder="__________" autocomplete="off" maxlength="10"
-        oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
-    </div>
- 
-    <div class="form-group">
-      <label class="form-label">> PASSWORD</label>
-      <input class="form-input" id="passwordInput" type="password"
-        placeholder="••••••••••" autocomplete="off" />
-    </div>
- 
-    <button class="btn-login" onclick="doLogin()">[ ENTER SYSTEM ]</button>
-  </div>
-</div>
- 
-<!-- ===== LOADING ===== -->
-<div class="screen" id="loadingScreen">
-  <div class="logo">
-    <div class="logo-text" data-text="[ MELBET ]">[ MELBET ]</div>
-    <div class="logo-sub">// GEMS SCRIPT v2.0 //</div>
-  </div>
- 
-  <div class="card">
-    <div class="corner-bl"></div>
-    <div class="loading-wrap">
-      <div class="hack-spinner">
-        <div class="hack-inner">SYS</div>
-      </div>
-      <div class="loading-title">> CONNECTING TO SERVER...</div>
-      <div class="loading-log" id="loadingLog">> <span>INIT...</span></div>
-      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-      <div class="progress-pct" id="progressPct">0%</div>
+<!-- LOGIN -->
+<div id="login-screen" class="screen active">
+  <div class="login-box">
+    <div class="corner tl"></div><div class="corner tr"></div>
+    <div class="corner bl"></div><div class="corner br"></div>
+    <div class="mariam-sub">لازم تسجل بالبرومو</div>
+    <div class="logo">ELKING11</div>
+    <div class="logo-sub">SIMULATOR SYSTEM</div>
+    <label class="field-label">// USER_ID &nbsp;(10 أرقام)</label>
+    <input id="user-id" class="field-input" type="text" maxlength="10" placeholder="0000000000" autocomplete="off">
+    <label class="field-label">// PASSWORD</label>
+    <input id="password" class="field-input" type="password" placeholder="ادخل الباسورد" autocomplete="off">
+    <button class="login-btn" onclick="doLogin()">ENTER SYSTEM &rarr;</button>
+    <div id="err" class="error-msg"></div>
+    <div class="tg-login">
+      <div class="tg-label">// للتواصل والطلبات</div>
+      <a href="https://t.me/mari_3_m" target="_blank">@mari_3_m</a>
     </div>
   </div>
 </div>
  
-<!-- ===== GAME ===== -->
-<div class="screen" id="gameScreen">
-  <div class="logo">
-    <div class="logo-text" data-text="[ MELBET ]">[ MELBET ]</div>
-    <div class="logo-sub">// GEMS SCRIPT v2.0 //</div>
+<!-- LOADING -->
+<div id="loading-screen" class="screen">
+  <div class="loading-title">ELKING11 SIMULATOR</div>
+  <div class="loading-sub">SYSTEM INITIALIZATION</div>
+  <div class="progress-wrap">
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-fill"></div></div>
+    <div class="progress-pct" id="prog-pct">0%</div>
+  </div>
+  <div class="loading-log" id="load-log">Initializing Game Engine...</div>
+</div>
+ 
+<!-- DASHBOARD -->
+<div id="dashboard-screen" class="screen">
+  <div class="dash-header">
+    <div class="dash-logo">ELKING11</div>
+    <div class="dash-uid" id="uid-display">USER: —</div>
   </div>
  
-  <div class="card">
-    <div class="corner-bl"></div>
- 
-    <div class="user-bar">
-      <div class="user-badge">
-        <div class="user-dot"></div>
-        <span class="user-name" id="displayUser">USER</span>
-      </div>
-      <div class="status-badge">STATUS: <span>ONLINE</span></div>
-    </div>
- 
-    <div class="game-title">> SCANNING GEMS MATRIX...</div>
- 
-    <div class="grid" id="gameGrid"></div>
- 
-    <div class="game-buttons">
-      <button class="btn-again" onclick="resetGrid()">[ RESET ]</button>
-      <button class="btn-start" id="startBtn" onclick="startGame()">[ SCAN ]</button>
-    </div>
- 
-    <div class="terminal-lines" id="termLines">
-      <div class="t-line">> SYSTEM <span class="ok">READY</span></div>
-      <div class="t-line">> AWAITING COMMAND...</div>
-    </div>
-    <div style="margin-top:14px; padding-top:12px; border-top:1px solid #2a1f00;">
-      <a href="https://t.me/ELKVINKJG" target="_blank" style="
-        display:flex; align-items:center; justify-content:center; gap:12px;
-        background:rgba(255,140,0,0.05);
-        border:1px solid var(--orange);
-        border-radius:5px;
-        padding:13px 16px;
-        text-decoration:none;
-        box-shadow:0 0 15px rgba(255,140,0,0.2);
-        transition:all 0.3s;"
-        onmouseover="this.style.boxShadow='0 0 28px rgba(255,140,0,0.5)';this.style.background='rgba(255,140,0,0.1)'"
-        onmouseout="this.style.boxShadow='0 0 15px rgba(255,140,0,0.2)';this.style.background='rgba(255,140,0,0.05)'">
-        <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="24" cy="24" r="24" fill="#FF8C00" fill-opacity="0.12"/>
-          <path d="M10.5 23.5L36.5 13L28 37L22 29L10.5 23.5Z" fill="#F5C542"/>
-          <path d="M22 29L20.5 36.5L25 31L22 29Z" fill="var(--orange)"/>
-          <path d="M22 29L28 37L36.5 13L22 29Z" fill="#FF8C00" fill-opacity="0.6"/>
-        </svg>
-        <div>
-          <div style="font-family:'Share Tech Mono',monospace; background:linear-gradient(90deg,#F5C542,#FF8C00); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-size:0.95rem; letter-spacing:2px; filter:drop-shadow(0 0 6px rgba(255,140,0,0.5));">@ELKVINKJG</div>
-          <div style="font-family:'Share Tech Mono',monospace; color:#7a5c00; font-size:0.62rem; letter-spacing:1px; margin-top:2px;">JOIN TELEGRAM CHANNEL</div>
-        </div>
-      </a>
-    </div>
+  <div class="green-screen">
+    <img src="data:image/jpeg;base64,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" alt="green screen">
   </div>
+ 
+  <div class="btn-group">
+    <button class="game-btn btn-start" onclick="animBtn(this)">START</button>
+    <button class="game-btn btn-again" onclick="animBtn(this)">AGAIN</button>
+  </div>
+ 
+  <div class="tg-dash">
+    <div class="tg-label">// للتواصل والطلبات</div>
+    <a href="https://t.me/mari_3_m" target="_blank">@mari_3_m</a>
+  </div>
+ 
+  <div class="dash-footer">FICTIONAL SIMULATOR — FOR ENTERTAINMENT ONLY</div>
 </div>
  
 <script>
-// ── MATRIX RAIN ──
-const canvas = document.getElementById('matrixCanvas');
+// Matrix Rain
+const canvas = document.getElementById('matrix-canvas');
 const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-const cols = Math.floor(canvas.width / 16);
-const drops = Array(cols).fill(1);
-const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*!<>';
- 
-function drawMatrix() {
-  ctx.fillStyle = 'rgba(0,0,0,0.05)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = '#FF8C00';
-  ctx.font = '13px Share Tech Mono';
-  drops.forEach((y, i) => {
-    ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * 16, y * 16);
-    if (y * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+window.addEventListener('resize',()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; init(); });
+const chars='0123456789ABCDEF<>{}[]()=>+-*/&|!?@#$%^~';
+const fontSize=13; let cols,drops;
+function init(){ cols=Math.floor(canvas.width/fontSize); drops=Array(cols).fill(1); } init();
+function drawMatrix(){
+  ctx.fillStyle='rgba(5,5,0,0.05)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.font=fontSize+'px Share Tech Mono,monospace';
+  for(let i=0;i<drops.length;i++){
+    const ch=chars[Math.floor(Math.random()*chars.length)];
+    const r=Math.random();
+    if(r<0.3) ctx.fillStyle='#ffdd00';
+    else if(r<0.55) ctx.fillStyle='#ccaa00';
+    else if(r<0.75) ctx.fillStyle='#886600';
+    else ctx.fillStyle='#fff700';
+    ctx.fillText(ch,i*fontSize,drops[i]*fontSize);
+    if(drops[i]*fontSize>canvas.height&&Math.random()>0.975) drops[i]=0;
     drops[i]++;
-  });
-}
-setInterval(drawMatrix, 45);
-window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
- 
-// ── AUTH ──
-function doLogin() {
-  const u = document.getElementById('usernameInput').value.trim();
-  const p = document.getElementById('passwordInput').value.trim();
-  const err = document.getElementById('errorMsg');
-  const validID = /^\d{10}$/.test(u);
-  const validPass = (p === 'VIP00' || p === 'VIPBET090' || p === 'VIPBET090');
- 
-  if (validID && validPass) {
-    err.classList.remove('show');
-    document.getElementById('displayUser').textContent = u.slice(0,4) + '***' + u.slice(-3);
-    showLoading();
-  } else {
-    err.classList.add('show');
-    ['usernameInput','passwordInput'].forEach(id => {
-      const el = document.getElementById(id);
-      el.style.borderColor = '#ff0033';
-      el.style.boxShadow = '0 0 10px rgba(255,215,0,0.4)';
-      setTimeout(() => { el.style.borderColor=''; el.style.boxShadow=''; }, 1800);
-    });
   }
+} setInterval(drawMatrix,40);
+ 
+// App logic
+const logs=["Initializing Game Engine...","Loading core modules...","Allocating memory buffers...","Connecting render pipeline...","Verifying system integrity...","Calibrating crash physics...","Loading user profile...","Finalizing dashboard..."];
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+function doLogin(){
+  const uid=document.getElementById('user-id').value.trim();
+  const pass=document.getElementById('password').value.trim();
+  const err=document.getElementById('err');
+  if(!/^\d{10}$/.test(uid)){err.textContent='// ERROR: USER_ID يجب أن يكون 10 أرقام فقط';return;}
+  if(pass!=='ELKING11'){err.textContent='// ERROR: PASSWORD غلط';return;}
+  err.textContent='';
+  document.getElementById('uid-display').textContent='USER: '+uid;
+  show('loading-screen'); startLoading();
 }
- 
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && document.getElementById('loginScreen').classList.contains('active')) doLogin();
-});
- 
-// ── LOADING ──
-const loadLogs = [
-  '> VALIDATING USER_ID...',
-  '> CHECKING CREDENTIALS...',
-  '> CONNECTING TO MELBET SERVER...',
-  '> BYPASSING SECURITY LAYER...',
-  '> INJECTING GEMS MODULE...',
-  '> DECRYPTING MATRIX DATA...',
-  '> LOADING PREDICTION ENGINE...',
-  '> <span class="ok">ACCESS GRANTED ✓</span>',
-];
- 
-function showLoading() {
-  showScreen('loadingScreen');
-  let progress = 0;
-  let logIdx = 0;
-  const fill = document.getElementById('progressFill');
-  const pct = document.getElementById('progressPct');
-  const log = document.getElementById('loadingLog');
- 
-  const logInterval = setInterval(() => {
-    if (logIdx < loadLogs.length) {
-      log.innerHTML = loadLogs[logIdx++];
-    }
-  }, 5000);
- 
-  const barInterval = setInterval(() => {
-    progress += 0.25;
-    if (progress > 100) progress = 100;
-    fill.style.width = progress + '%';
-    pct.textContent = Math.floor(progress) + '%';
- 
-    if (progress >= 100) {
-      clearInterval(barInterval);
-      clearInterval(logInterval);
-      setTimeout(() => { showScreen('gameScreen'); buildGrid(); }, 5000);
-    }
-  }, 100);
+function startLoading(){
+  const fill=document.getElementById('prog-fill'),pct=document.getElementById('prog-pct'),log=document.getElementById('load-log');
+  let progress=0,logIdx=0;
+  const iv=setInterval(()=>{
+    progress+=(100/40)*0.5;
+    if(progress>=100){progress=100;clearInterval(iv);setTimeout(()=>show('dashboard-screen'),400);}
+    fill.style.width=progress.toFixed(1)+'%'; pct.textContent=Math.floor(progress)+'%';
+    const li=Math.floor((progress/100)*logs.length);
+    if(li!==logIdx&&li<logs.length){logIdx=li;log.textContent=logs[li];}
+  },500);
 }
- 
-// ── SCREENS ──
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
- 
-// ── GAME ──
-const TOTAL = 25;
-let gameRunning = false;
- 
-function buildGrid() {
-  const grid = document.getElementById('gameGrid');
-  grid.innerHTML = '';
-  for (let i = 0; i < TOTAL; i++) {
-    const c = document.createElement('div');
-    c.className = 'cell';
-    c.id = 'c' + i;
-    grid.appendChild(c);
-  }
-  document.getElementById('startBtn').disabled = false;
-  gameRunning = false;
-  addTermLine('> MATRIX RESET. READY FOR SCAN.', 'ok');
-}
- 
-function resetGrid() { buildGrid(); }
- 
-function addTermLine(text, type = '') {
-  const wrap = document.getElementById('termLines');
-  const d = document.createElement('div');
-  d.className = 'terminal-lines';
-  const line = document.createElement('div');
-  line.className = 't-line';
-  line.innerHTML = type ? `${text.replace('ok','').replace('warn','')} <span class="${type}"></span>` : text;
-  line.innerHTML = text;
-  wrap.innerHTML = '';
-  wrap.appendChild(line);
-}
- 
-function startGame() {
-  if (gameRunning) return;
-  gameRunning = true;
-  document.getElementById('startBtn').disabled = true;
- 
-  for (let i = 0; i < TOTAL; i++) {
-    const c = document.getElementById('c' + i);
-    c.className = 'cell'; c.innerHTML = '';
-  }
- 
-  addTermLine('> <span class="warn">SCANNING MATRIX...</span>');
- 
-  const positions = [];
-  while (positions.length < 5) {
-    const p = Math.floor(Math.random() * TOTAL);
-    if (!positions.includes(p)) positions.push(p);
-  }
- 
-  positions.forEach((pos, idx) => {
-    setTimeout(() => {
-      const cell = document.getElementById('c' + pos);
-      cell.className = 'cell gem-revealed';
-      cell.innerHTML = '<span class="gem-icon">💎</span>';
- 
-      if (idx === 4) {
-        setTimeout(() => {
-          addTermLine('> <span class="ok">SCAN COMPLETE — 5 GEMS FOUND ✓</span>');
-          gameRunning = true;
-          document.getElementById('startBtn').disabled = true;
-        }, 300);
-      }
-    }, idx * 150 + 80);
-  });
-}
- 
-buildGrid();
+function animBtn(btn){btn.style.transform='scale(0.95)';setTimeout(()=>btn.style.transform='',150);}
+document.getElementById('user-id').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+document.getElementById('password').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 </script>
 </body>
 </html>
+ 
